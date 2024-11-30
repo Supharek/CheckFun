@@ -54,7 +54,18 @@
         <button onclick="closePopup()">ปิด</button>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite"></script>
+
     <script>
+        let model;
+
+        // ฟังก์ชันโหลดโมเดล TFLite
+        async function loadModel() {
+            model = await tfjs.tflite.loadTFLiteModel('model.tflite');
+            console.log("Model loaded successfully");
+        }
+
         // ฟังก์ชันเปิดป๊อปอัป
         function showPopup(isClean) {
             var popup = document.getElementById("popup");
@@ -74,15 +85,31 @@
             document.getElementById("popup").style.display = "none"; // ซ่อนป๊อปอัป
         }
 
-        // ฟังก์ชันในการตรวจสอบฟัน (สามารถเปลี่ยนตามโมเดลของคุณ)
-        function checkTeeth() {
-            // สมมติว่าโมเดลของคุณทำการตรวจสอบภาพและให้ผลลัพธ์
-            // ในที่นี้เราจะทำการจำลองการตรวจสอบว่า ฟันสะอาดหรือไม่
-            var isClean = Math.random() > 0.5; // สุ่มผลลัพธ์ระหว่าง true/false
-            
-            // เรียกฟังก์ชันเพื่อแสดงผลลัพธ์
-            showPopup(isClean);
+        // ฟังก์ชันในการตรวจสอบฟัน
+        async function checkTeeth() {
+            const fileInput = document.getElementById('imageInput');
+            if (fileInput.files.length === 0) {
+                alert("กรุณาอัพโหลดรูปภาพก่อน!");
+                return;
+            }
+
+            const img = new Image();
+            img.onload = async () => {
+                const tensor = tf.browser.fromPixels(img);
+                const resized = tf.image.resizeBilinear(tensor, [224, 224]); // ปรับขนาดภาพให้เหมาะสม
+                const input = resized.expandDims(0); // เพิ่มมิติให้กับข้อมูลภาพ
+
+                const prediction = await model.predict(input); // ใช้โมเดลในการทำนาย
+                const result = prediction.dataSync()[0]; // รับค่าผลการทำนาย (เช่น ค่าความน่าจะเป็น)
+
+                // สมมติว่า threshold ที่ 0.5 เป็นผลลัพธ์ว่า ฟันสะอาดหรือไม่
+                showPopup(result > 0.5); // ถ้าผลมากกว่า 0.5 ให้แสดงว่า "ฟันสะอาด"
+            };
+            img.src = URL.createObjectURL(fileInput.files[0]); // โหลดภาพจากไฟล์ที่เลือก
         }
+
+        // โหลดโมเดลเมื่อเริ่มต้น
+        loadModel();
     </script>
 
 </body>
