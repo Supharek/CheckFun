@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ตรวจสอบฟัน</title>
     <style>
-        /* ปรับแต่งสไตล์ของหน้าต่างป๊อปอัป */
         .popup {
             display: none;
             position: fixed;
@@ -21,15 +20,15 @@
         }
 
         .popup h2 {
-            color: #4CAF50; /* สีเขียวสำหรับผลฟันสะอาด */
+            color: #4CAF50;
         }
 
         .popup.error h2 {
-            color: #F44336; /* สีแดงสำหรับผลไม่สะอาด */
+            color: #F44336;
         }
 
         .popup button {
-            background-color: #FF4081; /* สีชมพู */
+            background-color: #FF4081;
             color: white;
             padding: 10px;
             border: none;
@@ -38,7 +37,7 @@
         }
 
         .popup button:hover {
-            background-color: #F50057; /* สีชมพูเข้มเมื่อ hover */
+            background-color: #F50057;
         }
     </style>
 </head>
@@ -48,30 +47,27 @@
     <input type="file" id="imageInput" accept="image/*" />
     <button onclick="checkTeeth()">ตรวจสอบฟัน</button>
 
-    <!-- ป๊อปอัปแสดงผล -->
     <div class="popup" id="popup">
         <h2 id="resultText">ผลการวิเคราะห์ฟัน</h2>
         <button onclick="closePopup()">ปิด</button>
     </div>
 
-    <!-- เพิ่มการโหลด TensorFlow.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script> <!-- TensorFlow.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite"></script> <!-- TensorFlow Lite -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite"></script>
 
     <script>
         let model;
 
-        // ฟังก์ชันโหลดโมเดล TFLite
         async function loadModel() {
             try {
-                // ตรวจสอบว่า tfjs ถูกโหลดแล้วหรือยัง
+                // ตรวจสอบว่า TensorFlow.js และ TensorFlow Lite ถูกโหลด
                 if (typeof tf === "undefined") {
                     alert("TensorFlow.js ไม่สามารถโหลดได้!");
                     return;
                 }
 
                 // โหลดโมเดล TFLite
-                model = await tf.tflite.loadTFLiteModel('model.tflite'); 
+                model = await tf.tflite.loadTFLiteModel('model.tflite');
                 console.log("Model loaded successfully");
             } catch (error) {
                 console.error("Error loading model: ", error);
@@ -79,7 +75,6 @@
             }
         }
 
-        // ฟังก์ชันเปิดป๊อปอัป
         function showPopup(isClean) {
             var popup = document.getElementById("popup");
             var resultText = document.getElementById("resultText");
@@ -90,15 +85,13 @@
                 resultText.innerText = "ฟันไม่สะอาด!";
                 popup.classList.add("error");
             }
-            popup.style.display = "block"; // แสดงป๊อปอัป
+            popup.style.display = "block";
         }
 
-        // ฟังก์ชันปิดป๊อปอัป
         function closePopup() {
-            document.getElementById("popup").style.display = "none"; // ซ่อนป๊อปอัป
+            document.getElementById("popup").style.display = "none";
         }
 
-        // ฟังก์ชันในการตรวจสอบฟัน
         async function checkTeeth() {
             const fileInput = document.getElementById('imageInput');
             if (fileInput.files.length === 0) {
@@ -106,7 +99,7 @@
                 return;
             }
 
-            // ตรวจสอบว่าโมเดลถูกโหลดหรือไม่
+            // ตรวจสอบว่าโมเดลได้ถูกโหลดแล้วหรือยัง
             if (!model) {
                 alert("โปรดรอการโหลดโมเดลก่อน");
                 return;
@@ -115,19 +108,17 @@
             const img = new Image();
             img.onload = async () => {
                 const tensor = tf.browser.fromPixels(img);
-                const resized = tf.image.resizeBilinear(tensor, [224, 224]); // ปรับขนาดภาพให้เหมาะสม
-                const input = resized.expandDims(0); // เพิ่มมิติให้กับข้อมูลภาพ
+                const resized = tf.image.resizeBilinear(tensor, [224, 224]);
+                const input = resized.expandDims(0);
 
-                const prediction = await model.predict(input); // ใช้โมเดลในการทำนาย
-                const result = prediction.dataSync()[0]; // รับค่าผลการทำนาย (เช่น ค่าความน่าจะเป็น)
+                const prediction = await model.predict(input); 
+                const result = prediction.dataSync()[0]; 
 
-                // สมมติว่า threshold ที่ 0.5 เป็นผลลัพธ์ว่า ฟันสะอาดหรือไม่
-                showPopup(result > 0.5); // ถ้าผลมากกว่า 0.5 ให้แสดงว่า "ฟันสะอาด"
+                showPopup(result > 0.5);
             };
-            img.src = URL.createObjectURL(fileInput.files[0]); // โหลดภาพจากไฟล์ที่เลือก
+            img.src = URL.createObjectURL(fileInput.files[0]); 
         }
 
-        // โหลดโมเดลเมื่อเริ่มต้น
         loadModel();
     </script>
 
