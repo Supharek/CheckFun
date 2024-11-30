@@ -54,7 +54,7 @@
         <button onclick="closePopup()">ปิด</button>
     </div>
 
-    <!-- เพิ่มการโหลด TensorFlow.js และ TensorFlow Lite -->
+    <!-- เพิ่มการโหลด TensorFlow.js -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script> <!-- TensorFlow.js -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite"></script> <!-- TensorFlow Lite -->
 
@@ -68,7 +68,7 @@
                 alert("TensorFlow.js ไม่สามารถโหลดได้!");
                 return;
             }
-            model = await tf.tflite.loadTFLiteModel('model.tflite'); // โหลดโมเดล
+            model = await tf.loadGraphModel('model.json'); // โหลดโมเดล TensorFlow.js ในรูปแบบ GraphModel
             console.log("Model loaded successfully");
         }
 
