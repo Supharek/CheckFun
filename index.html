@@ -71,10 +71,10 @@
             var popup = document.getElementById("popup");
             var resultText = document.getElementById("resultText");
             if (isClean) {
-                resultText.innerText = "ฟันไม่สะอาด!";
+                resultText.innerText = "ฟันสะอาด!";
                 popup.classList.remove("error");
             } else {
-                resultText.innerText = "ฟันสะอาด!";
+                resultText.innerText = "ฟันไม่สะอาด!";
                 popup.classList.add("error");
             }
             popup.style.display = "block"; // แสดงป๊อปอัป
