@@ -63,12 +63,14 @@
 
         // ฟังก์ชันโหลดโมเดล TFLite
         async function loadModel() {
-            if (typeof tf === "undefined") {
-                alert("TensorFlow.js ไม่สามารถโหลดได้!");
-                return;
-            }
             try {
-                // ใช้ tfjs-tflite โหลดโมเดล .tflite
+                // ตรวจสอบว่า tfjs ถูกโหลดแล้วหรือยัง
+                if (typeof tf === "undefined") {
+                    alert("TensorFlow.js ไม่สามารถโหลดได้!");
+                    return;
+                }
+
+                // โหลดโมเดล TFLite
                 model = await tf.tflite.loadTFLiteModel('model.tflite'); 
                 console.log("Model loaded successfully");
             } catch (error) {
@@ -101,6 +103,12 @@
             const fileInput = document.getElementById('imageInput');
             if (fileInput.files.length === 0) {
                 alert("กรุณาอัพโหลดรูปภาพก่อน!");
+                return;
+            }
+
+            // ตรวจสอบว่าโมเดลถูกโหลดหรือไม่
+            if (!model) {
+                alert("โปรดรอการโหลดโมเดลก่อน");
                 return;
             }
 
