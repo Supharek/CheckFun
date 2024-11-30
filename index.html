@@ -3,23 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตรวจสอบฟันสะอาด</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite"></script>
-    <link rel="stylesheet" href="style.css">
+    <title>ตรวจสอบฟัน</title>
+    <style>
+        /* ปรับแต่งสไตล์ของหน้าต่างป๊อปอัป */
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 2px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        .popup h2 {
+            color: #4CAF50; /* สีเขียวสำหรับผลฟันสะอาด */
+        }
+
+        .popup.error h2 {
+            color: #F44336; /* สีแดงสำหรับผลไม่สะอาด */
+        }
+
+        .popup button {
+            background-color: #FF4081; /* สีชมพู */
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .popup button:hover {
+            background-color: #F50057; /* สีชมพูเข้มเมื่อ hover */
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>ตรวจสอบฟันสะอาด</h1>
-        <p>อัพโหลดรูปหรือถ่ายรูปฟันของคุณ แล้วกดปุ่ม "ตรวจสอบฟัน"</p>
 
-        <input type="file" id="upload" accept="image/*" capture="camera" />
-        <img id="preview" src="#" alt="Preview" style="display: none;" />
-        
-        <button id="check">ตรวจสอบฟัน</button>
-        <p id="result"></p>
+    <h1>ตรวจสอบฟันสะอาด</h1>
+    <input type="file" id="imageInput" accept="image/*" />
+    <button onclick="checkTeeth()">ตรวจสอบฟัน</button>
+
+    <!-- ป๊อปอัปแสดงผล -->
+    <div class="popup" id="popup">
+        <h2 id="resultText">ผลการวิเคราะห์ฟัน</h2>
+        <button onclick="closePopup()">ปิด</button>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // ฟังก์ชันเปิดป๊อปอัป
+        function showPopup(isClean) {
+            var popup = document.getElementById("popup");
+            var resultText = document.getElementById("resultText");
+            if (isClean) {
+                resultText.innerText = "ฟันสะอาด!";
+                popup.classList.remove("error");
+            } else {
+                resultText.innerText = "ฟันไม่สะอาด!";
+                popup.classList.add("error");
+            }
+            popup.style.display = "block"; // แสดงป๊อปอัป
+        }
+
+        // ฟังก์ชันปิดป๊อปอัป
+        function closePopup() {
+            document.getElementById("popup").style.display = "none"; // ซ่อนป๊อปอัป
+        }
+
+        // ฟังก์ชันในการตรวจสอบฟัน (สามารถเปลี่ยนตามโมเดลของคุณ)
+        function checkTeeth() {
+            // สมมติว่าโมเดลของคุณทำการตรวจสอบภาพและให้ผลลัพธ์
+            // ในที่นี้เราจะทำการจำลองการตรวจสอบว่า ฟันสะอาดหรือไม่
+            var isClean = Math.random() > 0.5; // สุ่มผลลัพธ์ระหว่าง true/false
+            
+            // เรียกฟังก์ชันเพื่อแสดงผลลัพธ์
+            showPopup(isClean);
+        }
+    </script>
+
 </body>
 </html>
