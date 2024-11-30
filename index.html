@@ -63,13 +63,18 @@
 
         // ฟังก์ชันโหลดโมเดล TFLite
         async function loadModel() {
-            // ตรวจสอบว่า tfjs ถูกโหลดแล้วหรือยัง
             if (typeof tf === "undefined") {
                 alert("TensorFlow.js ไม่สามารถโหลดได้!");
                 return;
             }
-            model = await tf.loadGraphModel('model.json'); // โหลดโมเดล TensorFlow.js ในรูปแบบ GraphModel
-            console.log("Model loaded successfully");
+            try {
+                // ใช้ tfjs-tflite โหลดโมเดล .tflite
+                model = await tf.tflite.loadTFLiteModel('model.tflite'); 
+                console.log("Model loaded successfully");
+            } catch (error) {
+                console.error("Error loading model: ", error);
+                alert("ไม่สามารถโหลดโมเดลได้ กรุณาตรวจสอบโมเดล .tflite");
+            }
         }
 
         // ฟังก์ชันเปิดป๊อปอัป
