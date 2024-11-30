@@ -54,15 +54,21 @@
         <button onclick="closePopup()">ปิด</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite"></script>
+    <!-- เพิ่มการโหลด TensorFlow.js และ TensorFlow Lite -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script> <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite"></script> <!-- TensorFlow Lite -->
 
     <script>
         let model;
 
         // ฟังก์ชันโหลดโมเดล TFLite
         async function loadModel() {
-            model = await tfjs.tflite.loadTFLiteModel('model.tflite');
+            // ตรวจสอบว่า tfjs ถูกโหลดแล้วหรือยัง
+            if (typeof tf === "undefined") {
+                alert("TensorFlow.js ไม่สามารถโหลดได้!");
+                return;
+            }
+            model = await tf.tflite.loadTFLiteModel('model.tflite'); // โหลดโมเดล
             console.log("Model loaded successfully");
         }
 
